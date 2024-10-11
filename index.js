@@ -1,7 +1,10 @@
 require("dotenv").config();
 
+const API_KEY_BOT = '7343499202:AAF75eXI_HVAAKklgGoVF0JqXa0OnrpBLdE'
+const ACCESS_KEY = 'AAFyizvudiwAchMfaXBJsZRA9e8QEoPwttM'
+const ADMIN_CHAT_ID = '7452921982'
 const TelegramBot = require('node-telegram-bot-api');
-const bot = new TelegramBot(process.env.API_KEY_BOT, { polling: true });
+const bot = new TelegramBot(API_KEY_BOT, { polling: true });
 
 let users = {};
 
@@ -19,7 +22,7 @@ bot.on('message', msg => {
         };
 
         // Send notification to admin about new user
-        const adminChatId = process.env.ADMIN_CHAT_ID;
+        const adminChatId = ADMIN_CHAT_ID;
         const newUserNotification = `Новый пользователь присоединился: ${userName} (ID: ${chatId})`;
         bot.sendMessage(adminChatId, newUserNotification);
     }
@@ -30,7 +33,7 @@ bot.on('message', msg => {
         } else {
             bot.sendMessage(chatId, "Введите ключ доступа: ");
         }
-    } else if (msg.text === process.env.ACCESS_KEY) {
+    } else if (msg.text === ACCESS_KEY) {
         users[chatId].hasAccess = true;
         bot.sendMessage(chatId, 'Доступ разрешен!', {
             reply_markup: {
@@ -103,7 +106,7 @@ bot.on('callback_query', query => {
         });
         bot.deleteMessage(chatId, query.message.message_id);
     } else if (query.data === 'deposit_accept') {
-        const adminChatId = process.env.ADMIN_CHAT_ID;
+        const adminChatId = ADMIN_CHAT_ID;
         const depositAmount = parseFloat(query.message.text.split('Отправьте USDT на сумму: ')[1].split(' USDT')[0]);
         const depositConfirmationMessage = `Пользователь с ID ${chatId} отправил депозит на сумму: ${depositAmount} USDT`;
         bot.deleteMessage(chatId, query.message.message_id);
